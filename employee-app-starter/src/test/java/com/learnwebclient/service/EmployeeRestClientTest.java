@@ -2,11 +2,11 @@ package com.learnwebclient.service;
 
 import com.learnwebclient.dto.Employee;
 import com.learnwebclient.exception.ClientDataException;
-import com.learnwebclient.exception.EmplopyeeServiceException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.retry.RetryExhaustedException;
 
 import java.util.List;
 
@@ -40,6 +40,13 @@ public class EmployeeRestClientTest {
         int employeeId=10;
         Assertions.assertThrows(WebClientResponseException.class,
                 ()->employeeRestClient.getEmployeeById(employeeId));
+    }
+
+    @Test
+    void testToGetEmployeeById_withRetry(){
+        int employeeId=10;
+        Assertions.assertThrows(WebClientResponseException.class,
+                ()->employeeRestClient.getEmployeeById_withRetry(employeeId));
     }
 
 
@@ -149,7 +156,7 @@ public class EmployeeRestClientTest {
     @Test
     void errorEndPointTest(){
 
-        Assertions.assertThrows(EmplopyeeServiceException.class,()->employeeRestClient.errorEndPoint());
+        Assertions.assertThrows(RetryExhaustedException.class,()->employeeRestClient.errorEndPoint());
 
     }
 
